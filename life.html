@@ -152,17 +152,19 @@
     const chinaChart = echarts.init(document.getElementById('china-map'));
     window.addEventListener('resize', () => { worldChart.resize(); chinaChart.resize(); });
 
-    const loadGeoJSON = async (url) => (await fetch(url)).json();
+    const loadGeoJSON = async (url) => (await fetch(url, { cache: 'no-store' })).json();
 
     Promise.all([
-      loadGeoJSON('https://fastly.jsdelivr.net/npm/echarts@5/examples/data/asset/geo/World.json'),
-      loadGeoJSON('https://fastly.jsdelivr.net/npm/echarts@5/examples/data/asset/geo/Map_of_China.json'),
+      loadGeoJSON('maps/world.json'),
+      loadGeoJSON('maps/china.json'),
     ]).then(([worldJson, chinaJson]) => {
       echarts.registerMap('world', worldJson);
       echarts.registerMap('china', chinaJson);
 
       // Build quick lookup for dates/colors
-      const countryInfo = new Map(visitedCountries.map(d => [d.name, d]));
+      const aliasForMap = { 'Czechia': 'Czech Republic', 'Vatican City': 'Vatican' };
+      const countryInfo = new Map();
+      visitedCountries.forEach(d => { countryInfo.set(d.name, d); const alias = aliasForMap[d.name]; if (alias) countryInfo.set(alias, d); });
       const provinceInfo = new Map(visitedProvinces.map(d => [d.zh, d]));
 
       // World map options
@@ -174,7 +176,7 @@
             const info = countryInfo.get(params.name);
             if (info) {
               const cities = info.cities?.join(', ');
-              return `<div><strong>${params.name}</strong><br/>Cities: ${cities}</div>`;
+              return `<div><strong>${info.name || params.name}</strong><br/>Cities: ${cities}</div>`;
             }
             return `<div><strong>${params.name}</strong><br/><span style="color:#64748b">No trip logged</span></div>`;
           },
@@ -187,7 +189,7 @@
           emphasis: { label: { show: false } },
           label: { show: false },
           itemStyle: { areaColor: '#f8fafc', borderColor: '#cbd5e1' },
-          data: visitedCountries.map(d => ({ name: d.name, value: 1, itemStyle: { areaColor: d.color } })),
+          data: visitedCountries.map(d => ({ name: (aliasForMap[d.name] || d.name), value: 1, itemStyle: { areaColor: d.color } })),
         }],
       });
 
