@@ -92,11 +92,11 @@
     // ------- Data (EDIT HERE) -------
     // Countries visited: use official English names that match ECharts world map naming.
     // date: anything like '2025-02' or 'Summer 2024'. color: any CSS color.
-    const FILL = 'rgba(14, 165, 233, 0.45)'; // sky-500 @ 45%
-    const aliasForMap = { 'Czechia': 'Czech Republic', 'Vatican City': 'Vatican' };
+    const FILL = 'rgba(60, 99, 255, 0.4)'; // sky-500 @ 45%
+    const aliasForMap = {  'Vatican City': 'Vatican' };
     const visitedCountries = [
       { name: 'Hungary', cities: ['Budapest'], color: '#0ea5e9' },
-      { name: 'Czechia', cities: ['Prague'], color: '#22c55e' },
+      { name: 'Czech Rep.', cities: ['Prague'], color: '#22c55e' },
       { name: 'Poland', cities: ['Kraków'], color: '#f59e0b' },
       { name: 'Austria', cities: ['Vienna'], color: '#ef4444' },
       { name: 'Norway', cities: ['Flåm','Voss','Bergen','Lofoten Islands','Oslo'], color: '#14b8a6' },
@@ -188,7 +188,7 @@
               const cities = info.cities?.join(', ');
               return `<div><strong>${info.name || params.name}</strong><br/>Cities: ${cities}</div>`;
             }
-            return `<div><strong>${params.name}</strong><br/><span style="color:#64748b">No trip logged</span></div>`;
+            return `<div><strong>${params.name}</strong><br/><span style="color:#64748b">Future Destination</span></div>`;
           },
         },
         series: [{
@@ -196,6 +196,8 @@
           type: 'map',
           map: 'world',
           roam: true,
+          zoom: 1.65,   
+          scaleLimit: { min: 1, max: 10 },
           emphasis: { label: { show: false } },
           label: { show: false },
           itemStyle: { areaColor: '#f8fafc', borderColor: '#cbd5e1' },
@@ -218,7 +220,7 @@
               const cities = info.cities?.join(', ');
               return `<div><strong>${info.en} (${info.zh})</strong><br/>Cities: ${cities}</div>`;
             }
-            return `<div><strong>${params.name}</strong><br/><span style=\"color:#64748b\">No trip logged</span></div>`;
+            return `<div><strong>${params.name}</strong><br/><span style=\"color:#64748b\">Future Destination</span></div>`;
           },
         },
         series: [{
