@@ -3,17 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Xinhe Gao — Research & Life</title>
-  <meta name="description" content="Xinhe Gao — Biomedical Engineering & Machine Learning. Research-focused personal site for graduate applications." />
-  <meta property="og:title" content="Xinhe Gao — Research & Life" />
-  <meta property="og:description" content="Biomedical Engineering & Machine Learning. Projects, research, CV, and a glimpse of life." />
+  <title>Life — Travel Maps & Gallery</title>
+  <meta name="description" content="Travel map and photo gallery of Xinhe Gao: countries and Chinese provinces visited." />
+  <meta property="og:title" content="Life — Travel Maps & Gallery" />
+  <meta property="og:description" content="Interactive world & China maps with visited places and dates, plus a photo gallery." />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0ea5e9" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <style>html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}</style>
 </head>
 <body class="bg-white text-slate-800 selection:bg-cyan-200/60">
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white border px-3 py-1 rounded">Skip to content</a>
+
   <header class="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/75 border-b">
     <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
       <a href="index.html" class="font-semibold tracking-tight text-slate-900">Xinhe Gao</a>
@@ -22,30 +24,47 @@
         <li><a href="index.html" class="hover:underline">Home</a></li>
         <li><a href="research.html" class="hover:underline">Research</a></li>
         <li><a href="projects.html" class="hover:underline">Projects</a></li>
-        <li><a href="life.html" class="hover:underline">Life</a></li>
+        <li><a href="life.html" class="hover:underline font-medium">Life</a></li>
         <li><a href="cv.html" class="hover:underline">CV</a></li>
       </ul>
     </nav>
   </header>
 
-  <main id="main" class="max-w-5xl mx-auto px-4 pt-12 pb-16">
-    <h1 class="text-3xl font-semibold">Life</h1>
-    <p class="mt-3 text-slate-600">Travel snapshots and little stories. (Photos to come.)</p>
-    <div class="mt-8 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <div class="aspect-[4/3] rounded-2xl border bg-slate-50 flex items-center justify-center text-slate-400">Travel photo</div>
-      <div class="aspect-[4/3] rounded-2xl border bg-slate-50 flex items-center justify-center text-slate-400">Food memory</div>
-      <div class="aspect-[4/3] rounded-2xl border bg-slate-50 flex items-center justify-center text-slate-400">Cityscape</div>
-    </div>
+  <main id="main" class="max-w-6xl mx-auto px-4 pt-10 pb-16">
+    <header>
+      <h1 class="text-3xl md:text-4xl font-semibold">Life</h1>
+      <p class="mt-3 text-slate-600 max-w-prose">Places that shaped my curiosity. Hover to see the country/province and the cities I visited. Below is a photo gallery — small moments that stayed with me.</p>
+    </header>
+
+    <!-- Maps -->
+    <section class="mt-8 grid lg:grid-cols-2 gap-6">
+      <article class="rounded-2xl border p-4">
+        <h2 class="text-lg font-medium">World</h2>
+        <div id="world-map" class="mt-3 h-[360px] md:h-[440px]"></div>
+      </article>
+      <article class="rounded-2xl border p-4">
+        <h2 class="text-lg font-medium">China</h2>
+        <div id="china-map" class="mt-3 h-[360px] md:h-[440px]"></div>
+      </article>
+    </section>
+
+    <!-- Gallery -->
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold">Travel gallery</h2>
+      <p class="mt-2 text-sm text-slate-600">Drop your images into <code>/images/life/</code> and update the list below. Click a photo to view larger.</p>
+      <div id="gallery" class="mt-5 grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </section>
   </main>
 
   <footer class="border-t">
-    <div class="max-w-5xl mx-auto px-4 py-8 text-sm text-slate-500 flex justify-between items-center">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-sm text-slate-500 flex justify-between items-center">
       <p>© <span id="year"></span> Xinhe Gao</p>
       <button id="theme-toggle" class="border rounded-xl px-3 py-1">Toggle theme</button>
     </div>
   </footer>
 
   <script>
+    // ------- Basic UI helpers -------
     // Mobile nav
     const toggle = document.getElementById('nav-toggle');
     const links = document.getElementById('nav-links');
@@ -53,11 +72,8 @@
       const open = links.classList.toggle('hidden');
       toggle.setAttribute('aria-expanded', String(!open));
     });
-
-    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Theme toggle (light/dark)
+    // Theme toggle
     const root = document.documentElement;
     const themeBtn = document.getElementById('theme-toggle');
     const applyTheme = (mode) => {
@@ -72,6 +88,178 @@
       localStorage.setItem('theme', next);
       applyTheme(next);
     });
+
+    // ------- Data (EDIT HERE) -------
+    // Countries visited: use official English names that match ECharts world map naming.
+    // date: anything like '2025-02' or 'Summer 2024'. color: any CSS color.
+    const visitedCountries = [
+      { name: 'Hungary', cities: ['Budapest'], color: '#0ea5e9' },
+      { name: 'Czechia', cities: ['Prague'], color: '#22c55e' },
+      { name: 'Poland', cities: ['Kraków'], color: '#f59e0b' },
+      { name: 'Austria', cities: ['Vienna'], color: '#ef4444' },
+      { name: 'Norway', cities: ['Flåm','Voss','Bergen','Lofoten Islands','Oslo'], color: '#14b8a6' },
+      { name: 'Denmark', cities: ['Copenhagen'], color: '#a855f7' },
+      { name: 'Belgium', cities: ['Bruges','Antwerp','Brussels'], color: '#10b981' },
+      { name: 'Netherlands', cities: ['The Hague','Amsterdam'], color: '#3b82f6' },
+      { name: 'Switzerland', cities: ['Lucerne','Interlaken','Zurich','Lausanne'], color: '#eab308' },
+      { name: 'Italy', cities: ['Pisa','Florence','Naples','Sorrento','Rome'], color: '#fb7185' },
+      { name: 'Vatican City', cities: ['Vatican City'], color: '#8b5cf6' },
+      { name: 'France', cities: ['Paris','Nice'], color: '#06b6d4' },
+      { name: 'Spain', cities: ['Madrid','Barcelona'], color: '#84cc16' },
+      { name: 'Germany', cities: ['Cologne'], color: '#f97316' },
+      { name: 'Monaco', cities: ['Monaco City'], color: '#ef4444' },
+      { name: 'Kazakhstan', cities: ['Astana','Almaty'], color: '#0ea5e9' },
+      { name: 'United Arab Emirates', cities: ['Abu Dhabi','Dubai'], color: '#22c55e' },
+      { name: 'United Kingdom', cities: ['London','Lake District','Greenwich','York','Edinburgh','Cambridge','Birmingham','Liverpool'], color: '#f59e0b' },
+      { name: 'Japan', cities: ['Yokohama','Fukuoka'], color: '#ef4444' },
+      { name: 'Thailand', cities: ['Chiang Mai'], color: '#14b8a6' },
+    ];
+
+    // Provinces visited in China. Use Chinese names to match the map's GeoJSON, but you can also provide an English label for the tooltip.
+    const visitedProvinces = [
+      { zh: '江西', en: 'Jiangxi', cities: ['Nanchang'], color: '#0ea5e9' },
+      { zh: '新疆', en: 'Xinjiang', cities: ['Bortala','Ili'], color: '#22c55e' },
+      { zh: '山西', en: 'Shanxi', cities: ['Taiyuan','Datong'], color: '#f59e0b' },
+      { zh: '上海', en: 'Shanghai', cities: ['Shanghai'], color: '#ef4444' },
+      { zh: '江苏', en: 'Jiangsu', cities: ['Suzhou','Nanjing','Wuxi','Lianyungang','Taizhou'], color: '#14b8a6' },
+      { zh: '浙江', en: 'Zhejiang', cities: ['Taizhou','Zhoushan','Shaoxing','Jiaxing','Huzhou','Ningbo'], color: '#a855f7' },
+      { zh: '湖北', en: 'Hubei', cities: ['Wuhan','Yichang'], color: '#10b981' },
+      { zh: '澳门', en: 'Macau', cities: ['Macau'], color: '#3b82f6' },
+      { zh: '香港', en: 'Hong Kong', cities: ['Hong Kong'], color: '#eab308' },
+      { zh: '吉林', en: 'Jilin', cities: ['Changchun','Jilin City'], color: '#fb7185' },
+      { zh: '北京', en: 'Beijing', cities: ['Beijing'], color: '#8b5cf6' },
+      { zh: '重庆', en: 'Chongqing', cities: ['Chongqing'], color: '#06b6d4' },
+      { zh: '广东', en: 'Guangdong', cities: ['Guangzhou','Shenzhen'], color: '#84cc16' },
+      { zh: '福建', en: 'Fujian', cities: ['Xiamen','Fuzhou','Nanping'], color: '#f97316' },
+      { zh: '广西', en: 'Guangxi', cities: ['Beihai','Guilin'], color: '#ef4444' },
+      { zh: '山东', en: 'Shandong', cities: ['Qingdao','Yantai','Weihai','Tai\'an','Rizhao'], color: '#14b8a6' },
+      { zh: '云南', en: 'Yunnan', cities: ['Lijiang','Dali','Xishuangbanna','Kunming','Diqing (Shangri-La)'], color: '#a855f7' },
+      { zh: '四川', en: 'Sichuan', cities: ['Chengdu','Leshan'], color: '#10b981' },
+      { zh: '辽宁', en: 'Liaoning', cities: ['Dalian','Shenyang'], color: '#3b82f6' },
+      { zh: '黑龙江', en: 'Heilongjiang', cities: ['Harbin'], color: '#eab308' },
+      { zh: '海南', en: 'Hainan', cities: ['Sanya'], color: '#fb7185' },
+    ];
+
+    // Photo gallery items. Put your images in /images/life/ and update the paths and captions.
+    const galleryItems = [
+      { src: 'images/life/photo1.jpg', alt: 'Lausanne sunset', caption: 'Lausanne, 2025' },
+      { src: 'images/life/photo2.jpg', alt: 'Alpine trail', caption: 'Swiss Alps, 2025' },
+      { src: 'images/life/photo3.jpg', alt: 'Street crêpe', caption: 'Paris, 2025' },
+    ];
+
+    // ------- Maps (ECharts) -------
+    const worldChart = echarts.init(document.getElementById('world-map'));
+    const chinaChart = echarts.init(document.getElementById('china-map'));
+    window.addEventListener('resize', () => { worldChart.resize(); chinaChart.resize(); });
+
+    const loadGeoJSON = async (url) => (await fetch(url)).json();
+
+    Promise.all([
+      loadGeoJSON('https://fastly.jsdelivr.net/npm/echarts@5/map/json/world.json'),
+      loadGeoJSON('https://fastly.jsdelivr.net/npm/echarts@5/map/json/china.json'),
+    ]).then(([worldJson, chinaJson]) => {
+      echarts.registerMap('world', worldJson);
+      echarts.registerMap('china', chinaJson);
+
+      // Build quick lookup for dates/colors
+      const countryInfo = new Map(visitedCountries.map(d => [d.name, d]));
+      const provinceInfo = new Map(visitedProvinces.map(d => [d.zh, d]));
+
+      // World map options
+      worldChart.setOption({
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'item',
+          formatter: (params) => {
+            const info = countryInfo.get(params.name);
+            if (info) {
+              const cities = info.cities?.join(', ');
+              return `<div><strong>${params.name}</strong><br/>Cities: ${cities}</div>`;
+            }
+            return `<div><strong>${params.name}</strong><br/><span style="color:#64748b">No trip logged</span></div>`;
+          },
+        },
+        series: [{
+          name: 'world',
+          type: 'map',
+          map: 'world',
+          roam: true,
+          emphasis: { label: { show: false } },
+          label: { show: false },
+          itemStyle: { areaColor: '#f8fafc', borderColor: '#cbd5e1' },
+          data: visitedCountries.map(d => ({ name: d.name, value: 1, itemStyle: { areaColor: d.color } })),
+        }],
+      });
+
+      // China map options
+      chinaChart.setOption({
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'item',
+          formatter: (params) => {
+            const info = provinceInfo.get(params.name);
+            if (info) {
+              const cities = info.cities?.join(', ');
+              return `<div><strong>${info.en} (${info.zh})</strong><br/>Cities: ${cities}</div>`;
+            }
+            return `<div><strong>${params.name}</strong><br/><span style=\"color:#64748b\">No trip logged</span></div>`;
+          },
+        },
+        series: [{
+          name: 'china',
+          type: 'map',
+          map: 'china',
+          roam: true,
+          emphasis: { label: { show: false } },
+          label: { show: false },
+          itemStyle: { areaColor: '#f8fafc', borderColor: '#cbd5e1' },
+          data: visitedProvinces.map(d => ({ name: d.zh, value: 1, itemStyle: { areaColor: d.color } })),
+        }],
+      });
+    }).catch(err => {
+      console.error('Map load failed', err);
+    });
+
+    // ------- Simple gallery (with lightbox) -------
+    const galleryEl = document.getElementById('gallery');
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 hidden items-center justify-center p-4';
+    modal.innerHTML = `
+      <div class="relative max-w-3xl w-full">
+        <button aria-label="Close" class="absolute -top-10 right-0 text-white text-2xl" id="modal-close">×</button>
+        <figure class="rounded-2xl overflow-hidden bg-white">
+          <img id="modal-img" src="" alt="" class="w-full h-auto"/>
+          <figcaption id="modal-cap" class="p-3 text-sm text-slate-600"></figcaption>
+        </figure>
+      </div>`;
+    document.body.appendChild(modal);
+    const modalImg = modal.querySelector('#modal-img');
+    const modalCap = modal.querySelector('#modal-cap');
+    const modalClose = modal.querySelector('#modal-close');
+
+    const openModal = (src, cap) => {
+      modalImg.src = src; modalCap.textContent = cap || '';
+      modal.classList.remove('hidden');
+    };
+    const closeModal = () => { modal.classList.add('hidden'); modalImg.src=''; modalCap.textContent=''; };
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    // Render thumbnails
+    function renderGallery(items){
+      galleryEl.innerHTML = '';
+      items.forEach((it) => {
+        const card = document.createElement('figure');
+        card.className = 'group cursor-zoom-in rounded-2xl overflow-hidden border bg-white';
+        card.innerHTML = `
+          <img src="${it.src}" alt="${it.alt || ''}" class="aspect-[4/3] w-full object-cover group-hover:opacity-95"/>
+          <figcaption class="px-3 py-2 text-xs text-slate-600">${it.caption || ''}</figcaption>`;
+        card.addEventListener('click', () => openModal(it.src, it.caption));
+        galleryEl.appendChild(card);
+      });
+    }
+    renderGallery(galleryItems);
   </script>
 </body>
 </html>
