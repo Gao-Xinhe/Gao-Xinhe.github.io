@@ -11,45 +11,44 @@
   <meta name="theme-color" content="#0ea5e9" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="css/app.css" />
   <style>html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}</style>
 </head>
 <body class="bg-white text-slate-800 selection:bg-cyan-200/60">
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white border px-3 py-1 rounded">Skip to content</a>
 
   <header class="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/75 border-b">
-    <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+    <nav class="max-w-6xl mx-auto flex items-center justify-between px-4 py-3 nav-lift">
       <a href="index.html" class="font-semibold tracking-tight text-slate-900">Xinhe Gao</a>
       <button id="nav-toggle" class="md:hidden border rounded px-3 py-1" aria-expanded="false" aria-controls="nav-links">Menu</button>
       <ul id="nav-links" class="hidden md:flex gap-5 text-sm">
-        <li><a href="index.html" class="hover:underline">Home</a></li>
-        <li><a href="research.html" class="hover:underline">Research</a></li>
-        <li><a href="projects.html" class="hover:underline">Projects</a></li>
-        <li><a href="life.html" class="hover:underline font-medium">Life</a></li>
-        <li><a href="cv.html" class="hover:underline">CV</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="life.html" class="font-medium">Life</a></li>
+        <li><a href="cv.html">CV</a></li>
       </ul>
     </nav>
   </header>
 
   <main id="main" class="max-w-6xl mx-auto px-4 pt-10 pb-16">
-    <header>
+    <header class="fade-up" data-delay="0.1">
       <h1 class="text-3xl md:text-4xl font-semibold">Life</h1>
       <p class="mt-3 text-slate-600 max-w-prose">Places that shaped my curiosity. Hover to see the country/province and the cities I visited. Below is a photo gallery — small moments that stayed with me.</p>
     </header>
 
-    <!-- Maps -->
     <section class="mt-8 grid lg:grid-cols-2 gap-6">
-      <article class="rounded-2xl border p-4">
+      <article class="rounded-2xl border p-4 fade-up cardish" data-delay="0.15">
         <h2 class="text-lg font-medium">World</h2>
         <div id="world-map" class="mt-3 h-[360px] md:h-[440px]"></div>
       </article>
-      <article class="rounded-2xl border p-4">
+      <article class="rounded-2xl border p-4 fade-up cardish" data-delay="0.25">
         <h2 class="text-lg font-medium">China</h2>
         <div id="china-map" class="mt-3 h-[360px] md:h-[440px]"></div>
       </article>
     </section>
 
-    <!-- Gallery -->
-    <section class="mt-12">
+    <section class="mt-12 fade-up" data-delay="0.35">
       <h2 class="text-2xl font-semibold">Travel gallery</h2>
       <p class="mt-2 text-sm text-slate-600">Drop your images into <code>/images/life/</code> and update the list below. Click a photo to view larger.</p>
       <div id="gallery" class="mt-5 grid grid-cols-2 md:grid-cols-3 gap-3"></div>
@@ -63,9 +62,9 @@
     </div>
   </footer>
 
+  <script src="js/reveal-once.js"></script>
   <script>
     // ------- Basic UI helpers -------
-    // Mobile nav
     const toggle = document.getElementById('nav-toggle');
     const links = document.getElementById('nav-links');
     toggle?.addEventListener('click', () => {
@@ -90,9 +89,7 @@
     });
 
     // ------- Data (EDIT HERE) -------
-    // Countries visited: use official English names that match ECharts world map naming.
-    // date: anything like '2025-02' or 'Summer 2024'. color: any CSS color.
-    const FILL = 'rgba(60, 99, 255, 0.4)'; // sky-500 @ 45%
+    const FILL = 'rgba(60, 99, 255, 0.4)';
     const aliasForMap = {  'Vatican City': 'Vatican' };
     const visitedCountries = [
       { name: 'Hungary', cities: ['Budapest'], color: '#0ea5e9' },
@@ -116,10 +113,8 @@
       { name: 'Japan', cities: ['Yokohama','Fukuoka'], color: '#ef4444' },
       { name: 'Thailand', cities: ['Chiang Mai'], color: '#14b8a6' },
       { name: 'China', cities: ['My home country!'] },
-
     ];
 
-    // Provinces visited in China. Use Chinese names to match the map's GeoJSON, but you can also provide an English label for the tooltip.
     const visitedProvinces = [
       { zh: '江西', en: 'Jiangxi', cities: ['Nanchang'], color: '#0ea5e9' },
       { zh: '新疆', en: 'Xinjiang', cities: ['Bortala','Ili'], color: '#22c55e' },
@@ -146,7 +141,6 @@
       { zh: '海南', en: 'Hainan', cities: ['Sanya'], color: '#fb7185' },
     ];
 
-    // Photo gallery items. Put your images in /images/life/ and update the paths and captions.
     const galleryItems = [
       { src: 'images/life/photo1.jpg', alt: 'Lausanne sunset', caption: 'Lausanne, 2025' },
       { src: 'images/life/photo2.jpg', alt: 'Alpine trail', caption: 'Swiss Alps, 2025' },
@@ -167,17 +161,15 @@
       echarts.registerMap('world', worldJson);
       echarts.registerMap('china', chinaJson);
 
-      // Build quick lookup for dates/colors
       const aliasForMap = { 'Czechia': 'Czech Republic', 'Vatican City': 'Vatican' };
       const countryInfo = new Map();
       visitedCountries.forEach(d => {
         countryInfo.set(d.name, d);
         const alias = aliasForMap[d.name];
-        if (alias) countryInfo.set(alias, d); // e.g., 'Czech Republic' → same data
+        if (alias) countryInfo.set(alias, d);
       });
       const provinceInfo = new Map(visitedProvinces.map(d => [d.zh, d]));
 
-      // World map options
       worldChart.setOption({
         backgroundColor: 'transparent',
         tooltip: {
@@ -196,7 +188,7 @@
           type: 'map',
           map: 'world',
           roam: true,
-          zoom: 1.65,   
+          zoom: 1.65,
           scaleLimit: { min: 1, max: 10 },
           emphasis: { label: { show: false } },
           label: { show: false },
@@ -209,7 +201,6 @@
         }],
       });
 
-      // China map options
       chinaChart.setOption({
         backgroundColor: 'transparent',
         tooltip: {
@@ -262,18 +253,19 @@
     const openModal = (src, cap) => {
       modalImg.src = src; modalCap.textContent = cap || '';
       modal.classList.remove('hidden');
+      modal.classList.add('flex');
     };
-    const closeModal = () => { modal.classList.add('hidden'); modalImg.src=''; modalCap.textContent=''; };
+    const closeModal = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); modalImg.src=''; modalCap.textContent=''; };
     modalClose.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-    // Render thumbnails
     function renderGallery(items){
       galleryEl.innerHTML = '';
       items.forEach((it) => {
         const card = document.createElement('figure');
-        card.className = 'group cursor-zoom-in rounded-2xl overflow-hidden border bg-white';
+        card.className = 'group cursor-zoom-in rounded-2xl overflow-hidden border bg-white fade-up cardish';
+        card.setAttribute('data-delay', '0.15');
         card.innerHTML = `
           <img src="${it.src}" alt="${it.alt || ''}" class="aspect-[4/3] w-full object-cover group-hover:opacity-95"/>
           <figcaption class="px-3 py-2 text-xs text-slate-600">${it.caption || ''}</figcaption>`;

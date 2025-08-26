@@ -10,61 +10,89 @@
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0ea5e9" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/app.css" />
   <style>html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}</style>
 </head>
 <body class="bg-white text-slate-800 selection:bg-cyan-200/60">
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white border px-3 py-1 rounded">Skip to content</a>
+
+  <!-- Top nav (kept from original, add hover-lift) -->
   <header class="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/75 border-b">
-    <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+    <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3 nav-lift">
       <a href="index.html" class="font-semibold tracking-tight text-slate-900">Xinhe Gao</a>
       <button id="nav-toggle" class="md:hidden border rounded px-3 py-1" aria-expanded="false" aria-controls="nav-links">Menu</button>
       <ul id="nav-links" class="hidden md:flex gap-5 text-sm">
-        <li><a href="index.html" class="hover:underline">Home</a></li>
-        <li><a href="research.html" class="hover:underline">Research</a></li>
-        <li><a href="projects.html" class="hover:underline">Projects</a></li>
-        <li><a href="life.html" class="hover:underline">Life</a></li>
-        <li><a href="cv.html" class="hover:underline">CV</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="life.html">Life</a></li>
+        <li><a href="cv.html">CV</a></li>
       </ul>
     </nav>
   </header>
 
   <main id="main">
-    <section id="home" class="max-w-5xl mx-auto px-4 pt-16 pb-14">
-      <div class="grid md:grid-cols-3 gap-8 items-center">
-        <div class="md:col-span-2">
-          <h1 class="text-3xl md:text-4xl font-semibold leading-tight">Biomedical Engineering × Machine Learning</h1>
-          <p class="mt-4 text-slate-600 max-w-prose">I study how <span class="font-medium">sparse expert models</span> and <span class="font-medium">neural signals</span> meet in practice — building efficient models (MoE, Switch Transformers) and applying them to EEG and neural engineering problems.</p>
-          <div class="mt-6 flex flex-wrap gap-3">
-            <a href="cv.pdf" class="inline-flex items-center rounded-xl border px-4 py-2 text-sm hover:bg-slate-50" download>Download CV (PDF)</a>
+    <!-- Hero section: intro + photo-grid (mirrors the reference's interaction logic) -->
+    <section class="max-w-5xl mx-auto px-4 pt-16 pb-12">
+      <div class="md:flex md:items-center md:gap-6">
+        <div class="fade-up" data-delay="0.1">
+          <h1 class="text-4xl md:text-5xl font-semibold leading-tight">Xinhe Gao 高心禾</h1>
+          <p class="mt-4 text-slate-600 max-w-prose text-lg">
+            Biomedical Engineering major @ SJTU
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3 fade-up" data-delay="0.3">
+            <a href="research.html" class="inline-flex items-center rounded-3xl border px-5 py-2 text-sm hover:bg-slate-50">View Research</a>
+            <a href="projects.html" class="inline-flex items-center rounded-3xl bg-black text-white px-5 py-2 text-sm hover:opacity-90">Selected Projects</a>
+            <a href="cv.pdf" class="inline-flex items-center rounded-3xl border px-5 py-2 text-sm" download>Download CV</a>
           </div>
-          <p class="mt-3 text-xs text-slate-500">Currently: Exchange student at EPFL · BME major @ SJTU</p>
         </div>
-        <figure class="md:col-span-1">
-          <div class="aspect-square rounded-2xl border overflow-hidden"></div>
-          <figcaption class="sr-only">Portrait placeholder</figcaption>
-        </figure>
+
+        <!-- Photo grid (replace images under /images/profile/) -->
+        <aside class="fade-up md:ml-auto" data-delay="0.2">
+          <div>
+            <img src="images/profile/headshot.JPG" alt="Headshot of Xinhe Gao"
+              class="w-80 h-100 md:w-100 md:h-100 object-cover shadow-md" loading="eager" />
+          </div>
+        </aside>
+
       </div>
     </section>
 
+    <!-- Explore cards (kept, now with reveal + subtle lift) -->
     <section class="max-w-5xl mx-auto px-4 pb-16 border-t">
-      <h2 class="text-2xl font-semibold mt-12">Explore</h2>
+      <h2 class="text-2xl font-semibold mt-12 fade-up" data-delay="0.1">Explore</h2>
       <div class="mt-6 grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <a href="research.html" class="rounded-2xl border p-4 block hover:bg-slate-50">
+        <a href="research.html" class="rounded-2xl border p-4 block hover:bg-slate-50 fade-up cardish" data-delay="0.15">
           <h3 class="font-medium">Research</h3>
           <p class="text-sm text-slate-600 mt-1">Focus areas, interests, and current questions.</p>
         </a>
-        <a href="projects.html" class="rounded-2xl border p-4 block hover:bg-slate-50">
+        <a href="projects.html" class="rounded-2xl border p-4 block hover:bg-slate-50 fade-up cardish" data-delay="0.25">
           <h3 class="font-medium">Projects</h3>
           <p class="text-sm text-slate-600 mt-1">Selected work with brief write-ups and links.</p>
         </a>
-        <a href="life.html" class="rounded-2xl border p-4 block hover:bg-slate-50">
+        <a href="life.html" class="rounded-2xl border p-4 block hover:bg-slate-50 fade-up cardish" data-delay="0.35">
           <h3 class="font-medium">Life</h3>
           <p class="text-sm text-slate-600 mt-1">Travel snapshots and small stories.</p>
         </a>
-        <a href="cv.html" class="rounded-2xl border p-4 block hover:bg-slate-50">
+        <a href="cv.html" class="rounded-2xl border p-4 block hover:bg-slate-50 fade-up cardish" data-delay="0.45">
           <h3 class="font-medium">CV</h3>
           <p class="text-sm text-slate-600 mt-1">Quick summary + PDF download.</p>
         </a>
+      </div>
+    </section>
+
+    <!-- Education sample section (optional; mirrors reference "Education" reveal) -->
+    <section class="max-w-5xl mx-auto px-4 pb-16">
+      <h2 class="text-2xl font-semibold fade-up" data-delay="0.1">Education</h2>
+      <div class="mt-6 space-y-4">
+        <article class="rounded-2xl border p-4 fade-up cardish" data-delay="0.2">
+          <h3 class="font-medium">École Polytechnique Fédérale de Lausanne (EPFL)</h3>
+          <p class="text-sm text-slate-600">Exchange student in Life Sciences Engineering · 2025 Spring </p>
+        </article>
+        <article class="rounded-2xl border p-4 fade-up cardish" data-delay="0.3">
+          <h3 class="font-medium">Shanghai Jiao Tong University</h3>
+          <p class="text-sm text-slate-600">Bachelor of Science in Biomedical Engineering · 2022 — 2026</p>
+        </article>
       </div>
     </section>
   </main>
@@ -76,6 +104,7 @@
     </div>
   </footer>
 
+  <script src="js/reveal-once.js"></script>
   <script>
     // Mobile nav
     const toggle = document.getElementById('nav-toggle');
@@ -88,7 +117,7 @@
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Theme toggle (light/dark)
+    // Theme toggle
     const root = document.documentElement;
     const themeBtn = document.getElementById('theme-toggle');
     const applyTheme = (mode) => {
