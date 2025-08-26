@@ -155,8 +155,8 @@
     const loadGeoJSON = async (url) => (await fetch(url)).json();
 
     Promise.all([
-      loadGeoJSON('https://fastly.jsdelivr.net/npm/echarts@5/map/json/world.json'),
-      loadGeoJSON('https://fastly.jsdelivr.net/npm/echarts@5/map/json/china.json'),
+      loadGeoJSON('https://fastly.jsdelivr.net/npm/echarts@5/examples/data/asset/geo/World.json'),
+      loadGeoJSON('https://fastly.jsdelivr.net/npm/echarts@5/examples/data/asset/geo/Map_of_China.json'),
     ]).then(([worldJson, chinaJson]) => {
       echarts.registerMap('world', worldJson);
       echarts.registerMap('china', chinaJson);
