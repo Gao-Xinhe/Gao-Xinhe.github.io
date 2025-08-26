@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Xinhe Gao — Research & Life</title>
+  <meta name="description" content="Xinhe Gao — Biomedical Engineering & Machine Learning. Research-focused personal site for graduate applications." />
+  <meta property="og:title" content="Xinhe Gao — Research & Life" />
+  <meta property="og:description" content="Biomedical Engineering & Machine Learning. Projects, research, CV, and a glimpse of life." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}</style>
+</head>
+<body class="bg-white text-slate-800 selection:bg-cyan-200/60">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white border px-3 py-1 rounded">Skip to content</a>
+  <header class="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/75 border-b">
+    <nav class="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
+      <a href="index.html" class="font-semibold tracking-tight text-slate-900">Xinhe Gao</a>
+      <button id="nav-toggle" class="md:hidden border rounded px-3 py-1" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <ul id="nav-links" class="hidden md:flex gap-5 text-sm">
+        <li><a href="index.html" class="hover:underline">Home</a></li>
+        <li><a href="research.html" class="hover:underline">Research</a></li>
+        <li><a href="projects.html" class="hover:underline">Projects</a></li>
+        <li><a href="life.html" class="hover:underline">Life</a></li>
+        <li><a href="cv.html" class="hover:underline">CV</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="max-w-5xl mx-auto px-4 pt-12 pb-16">
+    <h1 class="text-3xl font-semibold">Life</h1>
+    <p class="mt-3 text-slate-600">Travel snapshots and little stories. (Photos to come.)</p>
+    <div class="mt-8 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="aspect-[4/3] rounded-2xl border bg-slate-50 flex items-center justify-center text-slate-400">Travel photo</div>
+      <div class="aspect-[4/3] rounded-2xl border bg-slate-50 flex items-center justify-center text-slate-400">Food memory</div>
+      <div class="aspect-[4/3] rounded-2xl border bg-slate-50 flex items-center justify-center text-slate-400">Cityscape</div>
+    </div>
+  </main>
+
+  <footer class="border-t">
+    <div class="max-w-5xl mx-auto px-4 py-8 text-sm text-slate-500 flex justify-between items-center">
+      <p>© <span id="year"></span> Xinhe Gao</p>
+      <button id="theme-toggle" class="border rounded-xl px-3 py-1">Toggle theme</button>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile nav
+    const toggle = document.getElementById('nav-toggle');
+    const links = document.getElementById('nav-links');
+    toggle?.addEventListener('click', () => {
+      const open = links.classList.toggle('hidden');
+      toggle.setAttribute('aria-expanded', String(!open));
+    });
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Theme toggle (light/dark)
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('theme-toggle');
+    const applyTheme = (mode) => {
+      root.classList.toggle('dark', mode === 'dark');
+      document.body.classList.toggle('bg-slate-950', mode === 'dark');
+      document.body.classList.toggle('text-slate-100', mode === 'dark');
+    };
+    const saved = localStorage.getItem('theme');
+    applyTheme(saved || 'light');
+    themeBtn.addEventListener('click', () => {
+      const next = (localStorage.getItem('theme') === 'dark') ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    });
+  </script>
+</body>
+</html>
