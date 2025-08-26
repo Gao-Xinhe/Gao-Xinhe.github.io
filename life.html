@@ -92,6 +92,8 @@
     // ------- Data (EDIT HERE) -------
     // Countries visited: use official English names that match ECharts world map naming.
     // date: anything like '2025-02' or 'Summer 2024'. color: any CSS color.
+    const FILL = 'rgba(14, 165, 233, 0.45)'; // sky-500 @ 45%
+    const aliasForMap = { 'Czechia': 'Czech Republic', 'Vatican City': 'Vatican' };
     const visitedCountries = [
       { name: 'Hungary', cities: ['Budapest'], color: '#0ea5e9' },
       { name: 'Czechia', cities: ['Prague'], color: '#22c55e' },
@@ -113,6 +115,8 @@
       { name: 'United Kingdom', cities: ['London','Lake District','Greenwich','York','Edinburgh','Cambridge','Birmingham','Liverpool'], color: '#f59e0b' },
       { name: 'Japan', cities: ['Yokohama','Fukuoka'], color: '#ef4444' },
       { name: 'Thailand', cities: ['Chiang Mai'], color: '#14b8a6' },
+      { name: 'China', cities: ['My home country!'] },
+
     ];
 
     // Provinces visited in China. Use Chinese names to match the map's GeoJSON, but you can also provide an English label for the tooltip.
@@ -120,7 +124,7 @@
       { zh: '江西', en: 'Jiangxi', cities: ['Nanchang'], color: '#0ea5e9' },
       { zh: '新疆', en: 'Xinjiang', cities: ['Bortala','Ili'], color: '#22c55e' },
       { zh: '山西', en: 'Shanxi', cities: ['Taiyuan','Datong'], color: '#f59e0b' },
-      { zh: '上海', en: 'Shanghai', cities: ['Shanghai'], color: '#ef4444' },
+      { zh: '上海', en: 'Shanghai', cities: ['My hometown!'], color: '#ef4444' },
       { zh: '江苏', en: 'Jiangsu', cities: ['Suzhou','Nanjing','Wuxi','Lianyungang','Taizhou'], color: '#14b8a6' },
       { zh: '浙江', en: 'Zhejiang', cities: ['Taizhou','Zhoushan','Shaoxing','Jiaxing','Huzhou','Ningbo'], color: '#a855f7' },
       { zh: '湖北', en: 'Hubei', cities: ['Wuhan','Yichang'], color: '#10b981' },
@@ -128,6 +132,8 @@
       { zh: '香港', en: 'Hong Kong', cities: ['Hong Kong'], color: '#eab308' },
       { zh: '吉林', en: 'Jilin', cities: ['Changchun','Jilin City'], color: '#fb7185' },
       { zh: '北京', en: 'Beijing', cities: ['Beijing'], color: '#8b5cf6' },
+      { zh: '陕西', en: 'Shaanxi', cities: ['Xi\'an'] },
+      { zh: '天津', en: 'Tianjin', cities: ['Tianjin'] },
       { zh: '重庆', en: 'Chongqing', cities: ['Chongqing'], color: '#06b6d4' },
       { zh: '广东', en: 'Guangdong', cities: ['Guangzhou','Shenzhen'], color: '#84cc16' },
       { zh: '福建', en: 'Fujian', cities: ['Xiamen','Fuzhou','Nanping'], color: '#f97316' },
@@ -164,7 +170,11 @@
       // Build quick lookup for dates/colors
       const aliasForMap = { 'Czechia': 'Czech Republic', 'Vatican City': 'Vatican' };
       const countryInfo = new Map();
-      visitedCountries.forEach(d => { countryInfo.set(d.name, d); const alias = aliasForMap[d.name]; if (alias) countryInfo.set(alias, d); });
+      visitedCountries.forEach(d => {
+        countryInfo.set(d.name, d);
+        const alias = aliasForMap[d.name];
+        if (alias) countryInfo.set(alias, d); // e.g., 'Czech Republic' → same data
+      });
       const provinceInfo = new Map(visitedProvinces.map(d => [d.zh, d]));
 
       // World map options
@@ -189,7 +199,11 @@
           emphasis: { label: { show: false } },
           label: { show: false },
           itemStyle: { areaColor: '#f8fafc', borderColor: '#cbd5e1' },
-          data: visitedCountries.map(d => ({ name: (aliasForMap[d.name] || d.name), value: 1, itemStyle: { areaColor: d.color } })),
+          data: visitedCountries.map(d => ({
+            name: (aliasForMap[d.name] || d.name),
+            value: 1,
+            itemStyle: { areaColor: FILL }
+          })),
         }],
       });
 
@@ -215,7 +229,11 @@
           emphasis: { label: { show: false } },
           label: { show: false },
           itemStyle: { areaColor: '#f8fafc', borderColor: '#cbd5e1' },
-          data: visitedProvinces.map(d => ({ name: d.zh, value: 1, itemStyle: { areaColor: d.color } })),
+          data: visitedProvinces.map(d => ({
+            name: d.zh,
+            value: 1,
+            itemStyle: { areaColor: FILL }
+          })),
         }],
       });
     }).catch(err => {
