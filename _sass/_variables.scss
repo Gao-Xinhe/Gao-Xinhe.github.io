@@ -33,8 +33,12 @@ $white-color: #ffffff !default;
 $black-color: #000000 !default;
 
 // Theme colors
+$chinese-date-red: #970804;
+$chinese-red: #AF5F54;
+$chinese-beige: #DFBE96;
+$chinese-brown: #655045;
 
-$code-bg-color-light: rgba($purple-color, 0.05);
+$code-bg-color-light: rgba($chinese-date-red, 0.05);
 $code-bg-color-dark: #2c3237 !default;
 
 // Font awesome location
@@ -50,3 +54,4 @@ $back-to-top-right: 30px;
 $back-to-top-diameter: 40px;
 $back-to-top-height: $back-to-top-diameter;
 $back-to-top-width: $back-to-top-diameter;
+
