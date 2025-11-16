@@ -35,4 +35,4 @@ I am fascinated by how neural dynamics and computations support complex cognitiv
 
 Outside of research, I enjoy reading, traveling, and theatre.
 
-Find out more about my [research]({{ '/publications/' | relative_url }}), [projects]({{ '/projects/' | relative_url }}), and [experiences]({{ '/cv/' | relative_url }}).
+Find out more about my [research]({{'/projects/' | relative_url  }}) and [experiences]({{ '/cv/' | relative_url }}).
